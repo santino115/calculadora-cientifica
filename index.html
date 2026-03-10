@@ -48,7 +48,7 @@ button{
 <button onclick="agregar('Math.sin(')">sin</button>
 <button onclick="agregar('Math.cos(')">cos</button>
 <button onclick="agregar('Math.tan(')">tan</button>
-<button onclick="agregar('Math.sqrt(')">√</button>
+<button onclick="raiz()">√</button>
 
 <br>
 
@@ -106,6 +106,14 @@ function calcular(){
         pantalla.value = "Error"
     }
 }
+function raiz(){
+    try{
+        pantalla.value = Math.sqrt(eval(pantalla.value))
+    }
+    catch{
+        pantalla.value = "Error"
+    }
+}    
 </script>
 
 </body>
