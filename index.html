@@ -187,7 +187,12 @@ button:active{
     font-size:15px;
     word-break:break-word;
 }
-
+.geo-bloque{
+display:flex;
+flex-direction:column;
+gap:8px;
+margin-bottom:14px;
+} 
 @media (max-width:480px){
     .calculadora, .panel{
         padding:14px;
@@ -208,7 +213,7 @@ button:active{
     .campos, .campos-3{
         grid-template-columns:1fr;
     }
-}
+}   
 </style>
 </head>
 <body>
@@ -316,29 +321,29 @@ button:active{
 
     <h4>Geometría</h4>
 
-    <div class="campos">
-        <input id="radioCirculo" type="number" placeholder="Radio círculo">
-        <button class="funcion" onclick="areaCirculo()">Área círculo</button>
+    <div class="geo-bloque">
+    <input id="radioCirculo" type="number" placeholder="Radio del círculo">
+    <button class="funcion" onclick="areaCirculo()">Calcular área del círculo</button>
     </div>
-
-    <div class="campos">
-        <input id="baseTriangulo" type="number" placeholder="Base triángulo">
-        <input id="alturaTriangulo" type="number" placeholder="Altura triángulo">
-        <button class="funcion" onclick="areaTriangulo()">Área triángulo</button>
+    
+    <div class="geo-bloque">
+    <input id="baseTriangulo" type="number" placeholder="Base triángulo">
+    <input id="alturaTriangulo" type="number" placeholder="Altura triángulo">
+    <button class="funcion" onclick="areaTriangulo()">Calcular área del triángulo</button>
     </div>
-
-    <div class="campos">
-        <input id="baseRect" type="number" placeholder="Base rectángulo">
-        <input id="alturaRect" type="number" placeholder="Altura rectángulo">
-        <button class="funcion" onclick="areaRectangulo()">Área rectángulo</button>
+    
+    <div class="geo-bloque">
+    <input id="baseRect" type="number" placeholder="Base rectángulo">
+    <input id="alturaRect" type="number" placeholder="Altura rectángulo">
+    <button class="funcion" onclick="areaRectangulo()">Calcular área del rectángulo</button>
     </div>
-
-    <div class="campos">
-        <input id="perBase" type="number" placeholder="Base">
-        <input id="perAltura" type="number" placeholder="Altura">
-        <button class="funcion" onclick="perimetroRect()">Perímetro rectángulo</button>
+    
+    <div class="geo-bloque">
+    <input id="perBase" type="number" placeholder="Base">
+    <input id="perAltura" type="number" placeholder="Altura">
+    <button class="funcion" onclick="perimetroRect()">Calcular perímetro</button>
     </div>
-
+    
     <div id="resultadoGeo" class="resultado"></div>
 </div>
 
