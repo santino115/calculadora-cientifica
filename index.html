@@ -5,7 +5,6 @@
 <title>Calculadora Científica</title>
 
 <style>
-
 body{
     background:#111;
     font-family:Arial;
@@ -35,7 +34,6 @@ button{
     font-size:18px;
     margin:3px;
 }
-
 </style>
 </head>
 
@@ -43,7 +41,7 @@ button{
 
 <div class="calculadora">
 
-<input id="pantalla" disabled>
+<input id="pantalla" readonly>
 
 <br>
 
@@ -56,7 +54,9 @@ button{
 
 <button onclick="agregar('**')">^</button>
 <button onclick="agregar('Math.PI')">π</button>
-    
+<button onclick="agregar('(')">(</button>
+<button onclick="agregar(')')">)</button>
+
 <br>
 
 <button onclick="agregar('7')">7</button>
@@ -88,26 +88,24 @@ button{
 </div>
 
 <script>
-
 let pantalla = document.getElementById("pantalla")
 
 function agregar(valor){
-pantalla.value += valor
+    pantalla.value += valor
 }
 
 function borrar(){
-pantalla.value = ""
+    pantalla.value = ""
 }
 
 function calcular(){
-try{
-pantalla.value = eval(pantalla.value)
+    try{
+        pantalla.value = eval(pantalla.value)
+    }
+    catch{
+        pantalla.value = "Error"
+    }
 }
-catch{
-pantalla.value = "Error"
-}
-}
-
 </script>
 
 </body>
