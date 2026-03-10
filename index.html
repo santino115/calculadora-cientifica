@@ -2,118 +2,380 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calculadora Científica</title>
 
 <style>
+*{
+    box-sizing:border-box;
+}
+
 body{
-    background:#111;
-    font-family:Arial;
+    margin:0;
+    min-height:100vh;
+    background:#0f1115;
+    font-family:Arial, sans-serif;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
+    padding:20px;
+    color:white;
 }
 
 .calculadora{
-    background:#222;
-    padding:20px;
-    border-radius:10px;
+    width:100%;
+    max-width:430px;
+    background:#1b1f27;
+    border-radius:20px;
+    padding:18px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.titulo{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.modo{
+    display:flex;
+    gap:8px;
+}
+
+.modo button{
+    width:auto;
+    min-width:64px;
+    height:38px;
+    padding:0 12px;
+    font-size:14px;
 }
 
 #pantalla{
     width:100%;
-    height:50px;
-    font-size:24px;
-    margin-bottom:10px;
+    height:72px;
+    border:none;
+    outline:none;
+    border-radius:14px;
+    background:#f4f7fb;
+    color:#111;
+    font-size:28px;
     text-align:right;
+    padding:16px;
+    margin-bottom:14px;
+}
+
+.subpantalla{
+    width:100%;
+    min-height:24px;
+    font-size:14px;
+    color:#aeb7c6;
+    text-align:right;
+    margin-bottom:10px;
+    word-wrap:break-word;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:8px;
 }
 
 button{
-    width:60px;
-    height:60px;
+    border:none;
+    border-radius:12px;
+    height:58px;
     font-size:18px;
-    margin:3px;
+    cursor:pointer;
+    background:#e8e8e8;
+    color:#111;
+    transition:transform 0.08s ease, opacity 0.15s ease;
+}
+
+button:hover{
+    opacity:0.92;
+}
+
+button:active{
+    transform:scale(0.97);
+}
+
+.operador{
+    background:#cfd7e6;
+}
+
+.funcion{
+    background:#dbe7ff;
+}
+
+.especial{
+    background:#ffd8d8;
+}
+
+.igual{
+    background:#90e0a6;
+    font-weight:bold;
+}
+
+.ancho{
+    grid-column:span 2;
+}
+
+@media (max-width:480px){
+    .calculadora{
+        max-width:100%;
+        padding:14px;
+        border-radius:16px;
+    }
+
+    #pantalla{
+        height:64px;
+        font-size:24px;
+        padding:12px;
+    }
+
+    button{
+        height:52px;
+        font-size:16px;
+    }
 }
 </style>
 </head>
-
 <body>
 
 <div class="calculadora">
+    <div class="topbar">
+        <div class="titulo">Calculadora Científica</div>
+        <div class="modo">
+            <button id="btnDeg" class="funcion" onclick="setModo('DEG')">DEG</button>
+            <button id="btnRad" class="operador" onclick="setModo('RAD')">RAD</button>
+        </div>
+    </div>
 
-<input id="pantalla" readonly>
+    <div id="subpantalla" class="subpantalla"></div>
+    <input id="pantalla" type="text" readonly>
 
-<br>
+    <div class="grid">
+        <button class="funcion" onclick="agregar('sin(')">sin</button>
+        <button class="funcion" onclick="agregar('cos(')">cos</button>
+        <button class="funcion" onclick="agregar('tan(')">tan</button>
+        <button class="funcion" onclick="agregar('log(')">log</button>
+        <button class="funcion" onclick="agregar('ln(')">ln</button>
 
-<button onclick="agregar('Math.sin(')">sin</button>
-<button onclick="agregar('Math.cos(')">cos</button>
-<button onclick="agregar('Math.tan(')">tan</button>
-<button onclick="raiz()">√</button>
+        <button class="funcion" onclick="cuadrado()">x²</button>
+        <button class="funcion" onclick="cubo()">x³</button>
+        <button class="funcion" onclick="raiz()">√</button>
+        <button class="funcion" onclick="inverso()">1/x</button>
+        <button class="funcion" onclick="absoluto()">|x|</button>
 
-<br>
+        <button class="funcion" onclick="agregar('(')">(</button>
+        <button class="funcion" onclick="agregar(')')">)</button>
+        <button class="funcion" onclick="agregar('Math.PI')">π</button>
+        <button class="funcion" onclick="agregar('Math.E')">e</button>
+        <button class="funcion" onclick="agregar('**')">^</button>
 
-<button onclick="agregar('**')">^</button>
-<button onclick="agregar('Math.PI')">π</button>
-<button onclick="agregar('(')">(</button>
-<button onclick="agregar(')')">)</button>
+        <button onclick="agregar('7')">7</button>
+        <button onclick="agregar('8')">8</button>
+        <button onclick="agregar('9')">9</button>
+        <button class="operador" onclick="agregar('/')">÷</button>
+        <button class="especial" onclick="borrarTodo()">AC</button>
 
-<br>
+        <button onclick="agregar('4')">4</button>
+        <button onclick="agregar('5')">5</button>
+        <button onclick="agregar('6')">6</button>
+        <button class="operador" onclick="agregar('*')">×</button>
+        <button class="especial" onclick="borrarUno()">⌫</button>
 
-<button onclick="agregar('7')">7</button>
-<button onclick="agregar('8')">8</button>
-<button onclick="agregar('9')">9</button>
-<button onclick="agregar('/')">÷</button>
+        <button onclick="agregar('1')">1</button>
+        <button onclick="agregar('2')">2</button>
+        <button onclick="agregar('3')">3</button>
+        <button class="operador" onclick="agregar('-')">−</button>
+        <button class="funcion" onclick="agregar('%')">%</button>
 
-<br>
-
-<button onclick="agregar('4')">4</button>
-<button onclick="agregar('5')">5</button>
-<button onclick="agregar('6')">6</button>
-<button onclick="agregar('*')">×</button>
-
-<br>
-
-<button onclick="agregar('1')">1</button>
-<button onclick="agregar('2')">2</button>
-<button onclick="agregar('3')">3</button>
-<button onclick="agregar('-')">-</button>
-
-<br>
-
-<button onclick="agregar('0')">0</button>
-<button onclick="calcular()">=</button>
-<button onclick="borrar()">C</button>
-<button onclick="agregar('+')">+</button>
-
+        <button onclick="agregar('0')">0</button>
+        <button onclick="agregar('.')">.</button>
+        <button class="igual ancho" onclick="calcular()">=</button>
+        <button class="operador" onclick="agregar('+')">+</button>
+    </div>
 </div>
 
 <script>
-let pantalla = document.getElementById("pantalla")
+const pantalla = document.getElementById("pantalla");
+const subpantalla = document.getElementById("subpantalla");
+const btnDeg = document.getElementById("btnDeg");
+const btnRad = document.getElementById("btnRad");
 
-function agregar(valor){
-    pantalla.value += valor
+let modoAngulo = "DEG";
+
+function setModo(modo){
+    modoAngulo = modo;
+
+    if(modo === "DEG"){
+        btnDeg.className = "funcion";
+        btnRad.className = "operador";
+    }else{
+        btnDeg.className = "operador";
+        btnRad.className = "funcion";
+    }
 }
 
-function borrar(){
-    pantalla.value = ""
+function agregar(valor){
+    pantalla.value += valor;
+}
+
+function borrarTodo(){
+    pantalla.value = "";
+    subpantalla.textContent = "";
+}
+
+function borrarUno(){
+    pantalla.value = pantalla.value.slice(0, -1);
+}
+
+function obtenerValorActual(){
+    if(pantalla.value.trim() === ""){
+        return null;
+    }
+
+    try{
+        return evaluarExpresion(pantalla.value);
+    }catch{
+        return null;
+    }
+}
+
+function raiz(){
+    const valor = obtenerValorActual();
+    if(valor === null){
+        pantalla.value = "Error";
+        return;
+    }
+    pantalla.value = String(Math.sqrt(valor));
+    subpantalla.textContent = `√(${valor})`;
+}
+
+function cuadrado(){
+    const valor = obtenerValorActual();
+    if(valor === null){
+        pantalla.value = "Error";
+        return;
+    }
+    pantalla.value = String(valor ** 2);
+    subpantalla.textContent = `(${valor})²`;
+}
+
+function cubo(){
+    const valor = obtenerValorActual();
+    if(valor === null){
+        pantalla.value = "Error";
+        return;
+    }
+    pantalla.value = String(valor ** 3);
+    subpantalla.textContent = `(${valor})³`;
+}
+
+function inverso(){
+    const valor = obtenerValorActual();
+    if(valor === null || valor === 0){
+        pantalla.value = "Error";
+        return;
+    }
+    pantalla.value = String(1 / valor);
+    subpantalla.textContent = `1/(${valor})`;
+}
+
+function absoluto(){
+    const valor = obtenerValorActual();
+    if(valor === null){
+        pantalla.value = "Error";
+        return;
+    }
+    pantalla.value = String(Math.abs(valor));
+    subpantalla.textContent = `|${valor}|`;
+}
+
+function gradosARadianes(grados){
+    return grados * Math.PI / 180;
+}
+
+function prepararExpresion(expr){
+    let salida = expr;
+
+    salida = salida.replace(/÷/g, "/");
+    salida = salida.replace(/×/g, "*");
+
+    salida = salida.replace(/log\(([^()]+)\)/g, "Math.log10($1)");
+    salida = salida.replace(/ln\(([^()]+)\)/g, "Math.log($1)");
+
+    if(modoAngulo === "DEG"){
+        salida = salida.replace(/sin\(([^()]+)\)/g, "Math.sin(gradosARadianes($1))");
+        salida = salida.replace(/cos\(([^()]+)\)/g, "Math.cos(gradosARadianes($1))");
+        salida = salida.replace(/tan\(([^()]+)\)/g, "Math.tan(gradosARadianes($1))");
+    }else{
+        salida = salida.replace(/sin\(([^()]+)\)/g, "Math.sin($1)");
+        salida = salida.replace(/cos\(([^()]+)\)/g, "Math.cos($1)");
+        salida = salida.replace(/tan\(([^()]+)\)/g, "Math.tan($1)");
+    }
+
+    return salida;
+}
+
+function evaluarExpresion(expr){
+    const preparada = prepararExpresion(expr);
+    return Function("gradosARadianes", `return ${preparada}`)(gradosARadianes);
 }
 
 function calcular(){
     try{
-        pantalla.value = eval(pantalla.value)
-    }
-    catch{
-        pantalla.value = "Error"
+        const expresionOriginal = pantalla.value;
+        const resultado = evaluarExpresion(expresionOriginal);
+
+        if(!Number.isFinite(resultado)){
+            throw new Error("Resultado inválido");
+        }
+
+        subpantalla.textContent = expresionOriginal;
+        pantalla.value = String(resultado);
+    }catch{
+        pantalla.value = "Error";
     }
 }
-function raiz(){
-    try{
-        pantalla.value = Math.sqrt(eval(pantalla.value))
+
+document.addEventListener("keydown", function(e){
+    const tecla = e.key;
+
+    if(/[0-9+\-*/().%]/.test(tecla)){
+        agregar(tecla);
+        return;
     }
-    catch{
-        pantalla.value = "Error"
+
+    if(tecla === "Enter"){
+        e.preventDefault();
+        calcular();
+        return;
     }
-}    
+
+    if(tecla === "Backspace"){
+        borrarUno();
+        return;
+    }
+
+    if(tecla === "Delete" || tecla === "Escape"){
+        borrarTodo();
+        return;
+    }
+
+    if(tecla === "^"){
+        agregar("**");
+        return;
+    }
+});
 </script>
 
 </body>
