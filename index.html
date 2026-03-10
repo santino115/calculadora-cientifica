@@ -142,7 +142,7 @@ button:active{
 
 .tabs{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
+    grid-template-columns:repeat(4, 1fr);
     gap:8px;
     margin-bottom:16px;
 }
@@ -224,6 +224,62 @@ button:active{
     margin-bottom:14px;
 }
 
+.historial-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.historial-top button{
+    width:auto;
+    height:40px;
+    padding:0 12px;
+    margin-top:0;
+}
+
+.historial-lista{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.historial-item{
+    background:#2b3240;
+    border-radius:12px;
+    padding:12px;
+    cursor:pointer;
+    transition:opacity 0.15s ease, transform 0.08s ease;
+}
+
+.historial-item:hover{
+    opacity:0.92;
+}
+
+.historial-item:active{
+    transform:scale(0.98);
+}
+
+.historial-expresion{
+    color:#aeb7c6;
+    font-size:14px;
+    margin-bottom:4px;
+    word-break:break-word;
+}
+
+.historial-resultado{
+    color:#ffffff;
+    font-size:18px;
+    font-weight:bold;
+    word-break:break-word;
+}
+
+.historial-vacio{
+    color:#aeb7c6;
+    font-size:14px;
+}
+
 @media (max-width:480px){
     .calculadora, .panel{
         padding:14px;
@@ -246,7 +302,7 @@ button:active{
     }
 
     .tabs{
-        grid-template-columns:1fr;
+        grid-template-columns:1fr 1fr;
     }
 }
 </style>
@@ -315,6 +371,7 @@ button:active{
             <button class="tab-btn activo" onclick="mostrarTab('tab-escolar', this)">Escolar</button>
             <button class="tab-btn" onclick="mostrarTab('tab-geometria', this)">Geometría</button>
             <button class="tab-btn" onclick="mostrarTab('tab-extra', this)">Extra</button>
+            <button class="tab-btn" onclick="mostrarTab('tab-historial', this)">Historial</button>
         </div>
 
         <div id="tab-escolar" class="tab-contenido activo">
@@ -409,6 +466,14 @@ button:active{
             </div>
             <div id="resultadoPit" class="resultado"></div>
         </div>
+
+        <div id="tab-historial" class="tab-contenido">
+            <div class="historial-top">
+                <h3>Historial</h3>
+                <button class="especial" onclick="limpiarHistorial()">Limpiar</button>
+            </div>
+            <div id="historialLista" class="historial-lista"></div>
+        </div>
     </div>
 </div>
 
@@ -417,6 +482,7 @@ const pantalla = document.getElementById("pantalla");
 const subpantalla = document.getElementById("subpantalla");
 const btnDeg = document.getElementById("btnDeg");
 const btnRad = document.getElementById("btnRad");
+const STORAGE_KEY = "calculadora_historial";
 
 let modoAngulo = "DEG";
 
@@ -548,6 +614,56 @@ function evaluarExpresion(expr){
     return Function("gradosARadianes", `return ${preparada}`)(gradosARadianes);
 }
 
+function guardarEnHistorial(expresion, resultado){
+    const historial = obtenerHistorial();
+    historial.unshift({ expresion, resultado });
+
+    if(historial.length > 20){
+        historial.pop();
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(historial));
+    renderizarHistorial();
+}
+
+function obtenerHistorial(){
+    try{
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }catch{
+        return [];
+    }
+}
+
+function renderizarHistorial(){
+    const lista = document.getElementById("historialLista");
+    const historial = obtenerHistorial();
+
+    if(historial.length === 0){
+        lista.innerHTML = '<div class="historial-vacio">Todavía no hay operaciones guardadas.</div>';
+        return;
+    }
+
+    lista.innerHTML = historial.map(item => `
+        <div class="historial-item" onclick="usarHistorial('${encodeURIComponent(item.expresion)}', '${encodeURIComponent(item.resultado)}')">
+            <div class="historial-expresion">${item.expresion}</div>
+            <div class="historial-resultado">= ${item.resultado}</div>
+        </div>
+    `).join("");
+}
+
+function usarHistorial(expresionCod, resultadoCod){
+    const expresion = decodeURIComponent(expresionCod);
+    const resultado = decodeURIComponent(resultadoCod);
+
+    subpantalla.textContent = expresion;
+    pantalla.value = resultado;
+}
+
+function limpiarHistorial(){
+    localStorage.removeItem(STORAGE_KEY);
+    renderizarHistorial();
+}
+
 function calcular(){
     try{
         const expresionOriginal = pantalla.value;
@@ -559,6 +675,7 @@ function calcular(){
 
         subpantalla.textContent = expresionOriginal;
         pantalla.value = String(resultado);
+        guardarEnHistorial(expresionOriginal, String(resultado));
     }catch{
         pantalla.value = "Error";
     }
@@ -767,6 +884,8 @@ document.addEventListener("keydown", function(e){
         return;
     }
 });
+
+renderizarHistorial();
 </script>
 
 </body>
