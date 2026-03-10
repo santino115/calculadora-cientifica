@@ -17,18 +17,23 @@ body{
     font-family:Arial, sans-serif;
     display:flex;
     justify-content:center;
-    align-items:center;
+    align-items:flex-start;
     padding:20px;
     color:white;
 }
 
+.contenedor{
+    width:100%;
+    max-width:460px;
+}
+
 .calculadora{
     width:100%;
-    max-width:430px;
     background:#1b1f27;
     border-radius:20px;
     padding:18px;
     box-shadow:0 20px 50px rgba(0,0,0,0.35);
+    margin-bottom:16px;
 }
 
 .topbar{
@@ -127,9 +132,64 @@ button:active{
     grid-column:span 2;
 }
 
+.panel{
+    background:#1b1f27;
+    border-radius:20px;
+    padding:18px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+    margin-bottom:16px;
+}
+
+.panel h3{
+    margin:0 0 12px 0;
+    font-size:18px;
+}
+
+.panel h4{
+    margin:18px 0 10px 0;
+    font-size:15px;
+    color:#dbe7ff;
+}
+
+.campos{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.campos-3{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:10px;
+}
+
+.panel input, .panel select{
+    width:100%;
+    height:46px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    padding:0 12px;
+    font-size:16px;
+    background:#f4f7fb;
+    color:#111;
+}
+
+.panel button{
+    width:100%;
+    margin-top:10px;
+}
+
+.resultado{
+    margin-top:10px;
+    min-height:24px;
+    color:#b6ffcb;
+    font-size:15px;
+    word-break:break-word;
+}
+
 @media (max-width:480px){
-    .calculadora{
-        max-width:100%;
+    .calculadora, .panel{
         padding:14px;
         border-radius:16px;
     }
@@ -144,64 +204,115 @@ button:active{
         height:52px;
         font-size:16px;
     }
+
+    .campos, .campos-3{
+        grid-template-columns:1fr;
+    }
 }
 </style>
 </head>
 <body>
 
-<div class="calculadora">
-    <div class="topbar">
-        <div class="titulo">Calculadora Científica</div>
-        <div class="modo">
-            <button id="btnDeg" class="funcion" onclick="setModo('DEG')">DEG</button>
-            <button id="btnRad" class="operador" onclick="setModo('RAD')">RAD</button>
+<div class="contenedor">
+    <div class="calculadora">
+        <div class="topbar">
+            <div class="titulo">Calculadora Científica</div>
+            <div class="modo">
+                <button id="btnDeg" class="funcion" onclick="setModo('DEG')">DEG</button>
+                <button id="btnRad" class="operador" onclick="setModo('RAD')">RAD</button>
+            </div>
+        </div>
+
+        <div id="subpantalla" class="subpantalla"></div>
+        <input id="pantalla" type="text" readonly>
+
+        <div class="grid">
+            <button class="funcion" onclick="agregar('sin(')">sin</button>
+            <button class="funcion" onclick="agregar('cos(')">cos</button>
+            <button class="funcion" onclick="agregar('tan(')">tan</button>
+            <button class="funcion" onclick="agregar('log(')">log</button>
+            <button class="funcion" onclick="agregar('ln(')">ln</button>
+
+            <button class="funcion" onclick="cuadrado()">x²</button>
+            <button class="funcion" onclick="cubo()">x³</button>
+            <button class="funcion" onclick="raiz()">√</button>
+            <button class="funcion" onclick="inverso()">1/x</button>
+            <button class="funcion" onclick="absoluto()">|x|</button>
+
+            <button class="funcion" onclick="agregar('(')">(</button>
+            <button class="funcion" onclick="agregar(')')">)</button>
+            <button class="funcion" onclick="agregar('Math.PI')">π</button>
+            <button class="funcion" onclick="agregar('Math.E')">e</button>
+            <button class="funcion" onclick="agregar('**')">^</button>
+
+            <button onclick="agregar('7')">7</button>
+            <button onclick="agregar('8')">8</button>
+            <button onclick="agregar('9')">9</button>
+            <button class="operador" onclick="agregar('/')">÷</button>
+            <button class="especial" onclick="borrarTodo()">AC</button>
+
+            <button onclick="agregar('4')">4</button>
+            <button onclick="agregar('5')">5</button>
+            <button onclick="agregar('6')">6</button>
+            <button class="operador" onclick="agregar('*')">×</button>
+            <button class="especial" onclick="borrarUno()">⌫</button>
+
+            <button onclick="agregar('1')">1</button>
+            <button onclick="agregar('2')">2</button>
+            <button onclick="agregar('3')">3</button>
+            <button class="operador" onclick="agregar('-')">−</button>
+            <button class="funcion" onclick="agregar('%')">%</button>
+
+            <button onclick="agregar('0')">0</button>
+            <button onclick="agregar('.')">.</button>
+            <button class="igual ancho" onclick="calcular()">=</button>
+            <button class="operador" onclick="agregar('+')">+</button>
         </div>
     </div>
 
-    <div id="subpantalla" class="subpantalla"></div>
-    <input id="pantalla" type="text" readonly>
+    <div class="panel">
+        <h3>Herramientas escolares</h3>
 
-    <div class="grid">
-        <button class="funcion" onclick="agregar('sin(')">sin</button>
-        <button class="funcion" onclick="agregar('cos(')">cos</button>
-        <button class="funcion" onclick="agregar('tan(')">tan</button>
-        <button class="funcion" onclick="agregar('log(')">log</button>
-        <button class="funcion" onclick="agregar('ln(')">ln</button>
+        <h4>Conversor de tiempo</h4>
+        <div class="campos-3">
+            <input id="tiempoValor" type="number" placeholder="Valor">
+            <select id="tiempoDesde">
+                <option value="h">Horas</option>
+                <option value="min">Minutos</option>
+                <option value="s">Segundos</option>
+            </select>
+            <select id="tiempoHacia">
+                <option value="h">Horas</option>
+                <option value="min">Minutos</option>
+                <option value="s">Segundos</option>
+            </select>
+        </div>
+        <button class="funcion" onclick="convertirTiempo()">Convertir tiempo</button>
+        <div id="resultadoTiempo" class="resultado"></div>
 
-        <button class="funcion" onclick="cuadrado()">x²</button>
-        <button class="funcion" onclick="cubo()">x³</button>
-        <button class="funcion" onclick="raiz()">√</button>
-        <button class="funcion" onclick="inverso()">1/x</button>
-        <button class="funcion" onclick="absoluto()">|x|</button>
+        <h4>Regla de tres simple</h4>
+        <div class="campos">
+            <input id="r3a" type="number" placeholder="A">
+            <input id="r3b" type="number" placeholder="B">
+            <input id="r3c" type="number" placeholder="C">
+            <input id="r3x" type="text" value="X" readonly>
+        </div>
+        <button class="funcion" onclick="reglaDeTres()">Calcular X</button>
+        <div id="resultadoR3" class="resultado"></div>
 
-        <button class="funcion" onclick="agregar('(')">(</button>
-        <button class="funcion" onclick="agregar(')')">)</button>
-        <button class="funcion" onclick="agregar('Math.PI')">π</button>
-        <button class="funcion" onclick="agregar('Math.E')">e</button>
-        <button class="funcion" onclick="agregar('**')">^</button>
+        <h4>Ecuación cuadrática</h4>
+        <div class="campos-3">
+            <input id="qa" type="number" placeholder="a">
+            <input id="qb" type="number" placeholder="b">
+            <input id="qc" type="number" placeholder="c">
+        </div>
+        <button class="funcion" onclick="resolverCuadratica()">Resolver ax² + bx + c = 0</button>
+        <div id="resultadoCuadratica" class="resultado"></div>
 
-        <button onclick="agregar('7')">7</button>
-        <button onclick="agregar('8')">8</button>
-        <button onclick="agregar('9')">9</button>
-        <button class="operador" onclick="agregar('/')">÷</button>
-        <button class="especial" onclick="borrarTodo()">AC</button>
-
-        <button onclick="agregar('4')">4</button>
-        <button onclick="agregar('5')">5</button>
-        <button onclick="agregar('6')">6</button>
-        <button class="operador" onclick="agregar('*')">×</button>
-        <button class="especial" onclick="borrarUno()">⌫</button>
-
-        <button onclick="agregar('1')">1</button>
-        <button onclick="agregar('2')">2</button>
-        <button onclick="agregar('3')">3</button>
-        <button class="operador" onclick="agregar('-')">−</button>
-        <button class="funcion" onclick="agregar('%')">%</button>
-
-        <button onclick="agregar('0')">0</button>
-        <button onclick="agregar('.')">.</button>
-        <button class="igual ancho" onclick="calcular()">=</button>
-        <button class="operador" onclick="agregar('+')">+</button>
+        <h4>Promedio</h4>
+        <input id="promedioLista" type="text" placeholder="Ej: 7,8,10,6">
+        <button class="funcion" onclick="calcularPromedio()">Calcular promedio</button>
+        <div id="resultadoPromedio" class="resultado"></div>
     </div>
 </div>
 
@@ -215,7 +326,6 @@ let modoAngulo = "DEG";
 
 function setModo(modo){
     modoAngulo = modo;
-
     if(modo === "DEG"){
         btnDeg.className = "funcion";
         btnRad.className = "operador";
@@ -239,10 +349,7 @@ function borrarUno(){
 }
 
 function obtenerValorActual(){
-    if(pantalla.value.trim() === ""){
-        return null;
-    }
-
+    if(pantalla.value.trim() === "") return null;
     try{
         return evaluarExpresion(pantalla.value);
     }catch{
@@ -252,7 +359,7 @@ function obtenerValorActual(){
 
 function raiz(){
     const valor = obtenerValorActual();
-    if(valor === null){
+    if(valor === null || valor < 0){
         pantalla.value = "Error";
         return;
     }
@@ -309,6 +416,7 @@ function prepararExpresion(expr){
 
     salida = salida.replace(/÷/g, "/");
     salida = salida.replace(/×/g, "*");
+    salida = salida.replace(/−/g, "-");
 
     salida = salida.replace(/log\(([^()]+)\)/g, "Math.log10($1)");
     salida = salida.replace(/ln\(([^()]+)\)/g, "Math.log($1)");
@@ -345,6 +453,96 @@ function calcular(){
     }catch{
         pantalla.value = "Error";
     }
+}
+
+function convertirTiempo(){
+    const valor = parseFloat(document.getElementById("tiempoValor").value);
+    const desde = document.getElementById("tiempoDesde").value;
+    const hacia = document.getElementById("tiempoHacia").value;
+    const salida = document.getElementById("resultadoTiempo");
+
+    if(isNaN(valor)){
+        salida.textContent = "Ingresá un valor válido.";
+        return;
+    }
+
+    const enSegundos = (
+        desde === "h" ? valor * 3600 :
+        desde === "min" ? valor * 60 :
+        valor
+    );
+
+    const resultado = (
+        hacia === "h" ? enSegundos / 3600 :
+        hacia === "min" ? enSegundos / 60 :
+        enSegundos
+    );
+
+    salida.textContent = `${valor} ${desde} = ${resultado} ${hacia}`;
+}
+
+function reglaDeTres(){
+    const a = parseFloat(document.getElementById("r3a").value);
+    const b = parseFloat(document.getElementById("r3b").value);
+    const c = parseFloat(document.getElementById("r3c").value);
+    const salida = document.getElementById("resultadoR3");
+
+    if([a,b,c].some(isNaN) || a === 0){
+        salida.textContent = "Completá A, B y C correctamente.";
+        return;
+    }
+
+    const x = (b * c) / a;
+    salida.textContent = `Si ${a} → ${b}, entonces ${c} → ${x}`;
+}
+
+function resolverCuadratica(){
+    const a = parseFloat(document.getElementById("qa").value);
+    const b = parseFloat(document.getElementById("qb").value);
+    const c = parseFloat(document.getElementById("qc").value);
+    const salida = document.getElementById("resultadoCuadratica");
+
+    if([a,b,c].some(isNaN) || a === 0){
+        salida.textContent = "Ingresá a, b y c válidos, con a distinto de 0.";
+        return;
+    }
+
+    const discriminante = b*b - 4*a*c;
+
+    if(discriminante < 0){
+        salida.textContent = `No tiene raíces reales. Δ = ${discriminante}`;
+        return;
+    }
+
+    const x1 = (-b + Math.sqrt(discriminante)) / (2*a);
+    const x2 = (-b - Math.sqrt(discriminante)) / (2*a);
+
+    salida.textContent = `Δ = ${discriminante} | x₁ = ${x1} | x₂ = ${x2}`;
+}
+
+function calcularPromedio(){
+    const texto = document.getElementById("promedioLista").value.trim();
+    const salida = document.getElementById("resultadoPromedio");
+
+    if(texto === ""){
+        salida.textContent = "Ingresá números separados por comas.";
+        return;
+    }
+
+    const numeros = texto
+        .split(",")
+        .map(n => parseFloat(n.trim()))
+        .filter(n => !isNaN(n));
+
+    if(numeros.length === 0){
+        salida.textContent = "No hay números válidos.";
+        return;
+    }
+
+    const suma = numeros.reduce((acc, n) => acc + n, 0);
+    const promedio = suma / numeros.length;
+
+    salida.textContent = `Promedio = ${promedio}`;
 }
 
 document.addEventListener("keydown", function(e){
