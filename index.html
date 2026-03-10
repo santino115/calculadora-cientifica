@@ -271,49 +271,75 @@ button:active{
     </div>
 
     <div class="panel">
-        <h3>Herramientas escolares</h3>
+    <h3>Herramientas escolares</h3>
 
-        <h4>Conversor de tiempo</h4>
-        <div class="campos-3">
-            <input id="tiempoValor" type="number" placeholder="Valor">
-            <select id="tiempoDesde">
-                <option value="h">Horas</option>
-                <option value="min">Minutos</option>
-                <option value="s">Segundos</option>
-            </select>
-            <select id="tiempoHacia">
-                <option value="h">Horas</option>
-                <option value="min">Minutos</option>
-                <option value="s">Segundos</option>
-            </select>
-        </div>
-        <button class="funcion" onclick="convertirTiempo()">Convertir tiempo</button>
-        <div id="resultadoTiempo" class="resultado"></div>
-
-        <h4>Regla de tres simple</h4>
-        <div class="campos">
-            <input id="r3a" type="number" placeholder="A">
-            <input id="r3b" type="number" placeholder="B">
-            <input id="r3c" type="number" placeholder="C">
-            <input id="r3x" type="text" value="X" readonly>
-        </div>
-        <button class="funcion" onclick="reglaDeTres()">Calcular X</button>
-        <div id="resultadoR3" class="resultado"></div>
-
-        <h4>Ecuación cuadrática</h4>
-        <div class="campos-3">
-            <input id="qa" type="number" placeholder="a">
-            <input id="qb" type="number" placeholder="b">
-            <input id="qc" type="number" placeholder="c">
-        </div>
-        <button class="funcion" onclick="resolverCuadratica()">Resolver ax² + bx + c = 0</button>
-        <div id="resultadoCuadratica" class="resultado"></div>
-
-        <h4>Promedio</h4>
-        <input id="promedioLista" type="text" placeholder="Ej: 7,8,10,6">
-        <button class="funcion" onclick="calcularPromedio()">Calcular promedio</button>
-        <div id="resultadoPromedio" class="resultado"></div>
+    <h4>Conversor de tiempo</h4>
+    <div class="campos-3">
+        <input id="tiempoValor" type="number" placeholder="Valor">
+        <select id="tiempoDesde">
+            <option value="h">Horas</option>
+            <option value="min">Minutos</option>
+            <option value="s">Segundos</option>
+        </select>
+        <select id="tiempoHacia">
+            <option value="h">Horas</option>
+            <option value="min">Minutos</option>
+            <option value="s">Segundos</option>
+        </select>
     </div>
+    <button class="funcion" onclick="convertirTiempo()">Convertir tiempo</button>
+    <div id="resultadoTiempo" class="resultado"></div>
+
+    <h4>Regla de tres simple</h4>
+    <div class="campos">
+        <input id="r3a" type="number" placeholder="A">
+        <input id="r3b" type="number" placeholder="B">
+        <input id="r3c" type="number" placeholder="C">
+        <input id="r3x" type="text" value="X" readonly>
+    </div>
+    <button class="funcion" onclick="reglaDeTres()">Calcular X</button>
+    <div id="resultadoR3" class="resultado"></div>
+
+    <h4>Ecuación cuadrática</h4>
+    <div class="campos-3">
+        <input id="qa" type="number" placeholder="a">
+        <input id="qb" type="number" placeholder="b">
+        <input id="qc" type="number" placeholder="c">
+    </div>
+    <button class="funcion" onclick="resolverCuadratica()">Resolver ax² + bx + c = 0</button>
+    <div id="resultadoCuadratica" class="resultado"></div>
+
+    <h4>Promedio</h4>
+    <input id="promedioLista" type="text" placeholder="Ej: 7,8,10,6">
+    <button class="funcion" onclick="calcularPromedio()">Calcular promedio</button>
+    <div id="resultadoPromedio" class="resultado"></div>
+
+    <h4>Geometría</h4>
+
+    <div class="campos">
+        <input id="radioCirculo" type="number" placeholder="Radio círculo">
+        <button class="funcion" onclick="areaCirculo()">Área círculo</button>
+    </div>
+
+    <div class="campos">
+        <input id="baseTriangulo" type="number" placeholder="Base triángulo">
+        <input id="alturaTriangulo" type="number" placeholder="Altura triángulo">
+        <button class="funcion" onclick="areaTriangulo()">Área triángulo</button>
+    </div>
+
+    <div class="campos">
+        <input id="baseRect" type="number" placeholder="Base rectángulo">
+        <input id="alturaRect" type="number" placeholder="Altura rectángulo">
+        <button class="funcion" onclick="areaRectangulo()">Área rectángulo</button>
+    </div>
+
+    <div class="campos">
+        <input id="perBase" type="number" placeholder="Base">
+        <input id="perAltura" type="number" placeholder="Altura">
+        <button class="funcion" onclick="perimetroRect()">Perímetro rectángulo</button>
+    </div>
+
+    <div id="resultadoGeo" class="resultado"></div>
 </div>
 
 <script>
@@ -574,6 +600,60 @@ document.addEventListener("keydown", function(e){
         return;
     }
 });
+function areaCirculo(){
+    const r = parseFloat(document.getElementById("radioCirculo").value)
+    const salida = document.getElementById("resultadoGeo")
+
+    if(isNaN(r)){
+        salida.textContent = "Ingresá un radio válido"
+        return
+    }
+
+    const area = Math.PI * r * r
+    salida.textContent = "Área del círculo = " + area
+}
+
+function areaTriangulo(){
+    const b = parseFloat(document.getElementById("baseTriangulo").value)
+    const h = parseFloat(document.getElementById("alturaTriangulo").value)
+    const salida = document.getElementById("resultadoGeo")
+
+    if(isNaN(b) || isNaN(h)){
+        salida.textContent = "Ingresá base y altura"
+        return
+    }
+
+    const area = (b * h) / 2
+    salida.textContent = "Área del triángulo = " + area
+}
+
+function areaRectangulo(){
+    const b = parseFloat(document.getElementById("baseRect").value)
+    const h = parseFloat(document.getElementById("alturaRect").value)
+    const salida = document.getElementById("resultadoGeo")
+
+    if(isNaN(b) || isNaN(h)){
+        salida.textContent = "Ingresá base y altura"
+        return
+    }
+
+    const area = b * h
+    salida.textContent = "Área del rectángulo = " + area
+}
+
+function perimetroRect(){
+    const b = parseFloat(document.getElementById("perBase").value)
+    const h = parseFloat(document.getElementById("perAltura").value)
+    const salida = document.getElementById("resultadoGeo")
+
+    if(isNaN(b) || isNaN(h)){
+        salida.textContent = "Ingresá base y altura"
+        return
+    }
+
+    const perimetro = 2*(b+h)
+    salida.textContent = "Perímetro = " + perimetro
+}    
 </script>
 
 </body>
