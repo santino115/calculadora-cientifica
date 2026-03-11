@@ -143,8 +143,8 @@ button:active{
 .tabs{
     display:grid;
     grid-template-columns:repeat(5, 1fr);
-    gap:8px;
-    margin-bottom:16px;
+    gap:10px;
+    margin-bottom:20px;
 }
 
 .tab-btn{
@@ -160,13 +160,22 @@ button:active{
     color:#111;
     font-weight:bold;
 }
-
 .tab-contenido{
     display:none;
 }
-
 .tab-contenido.activo{
     display:block;
+    padding-top:4px;
+}
+
+.tab-contenido h3{
+    margin-top:0;
+    margin-bottom:16px;
+}
+
+.tab-contenido h4{
+    margin-top:22px;
+    margin-bottom:12px;
 }
 
 .panel h3{
@@ -183,13 +192,13 @@ button:active{
 .campos{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:10px;
+    gap:12px;
 }
 
 .campos-3{
     display:grid;
     grid-template-columns:1fr 1fr 1fr;
-    gap:10px;
+    gap:12px;
 }
 
 .panel input, .panel select{
@@ -206,7 +215,7 @@ button:active{
 
 .panel button{
     width:100%;
-    margin-top:10px;
+    margin-top:12px;
 }
 
 .resultado{
@@ -304,8 +313,10 @@ button:active{
         font-size:16px;
     }
 
-    .campos, .campos-3{
+    .campos,
+    .campos-3{
         grid-template-columns:1fr;
+        gap:12px;
     }
 
     .tabs{
