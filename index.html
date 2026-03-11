@@ -142,14 +142,14 @@ button:active{
 
 .tabs{
     display:grid;
-    grid-template-columns:repeat(4, 1fr);
+    grid-template-columns:repeat(5, 1fr);
     gap:8px;
     margin-bottom:16px;
 }
 
 .tab-btn{
     height:44px;
-    font-size:14px;
+    font-size:13px;
     border-radius:12px;
     background:#2b3240;
     color:#fff;
@@ -280,6 +280,13 @@ button:active{
     font-size:14px;
 }
 
+.info-unidades{
+    color:#aeb7c6;
+    font-size:13px;
+    margin-top:4px;
+    line-height:1.4;
+}
+
 @media (max-width:480px){
     .calculadora, .panel{
         padding:14px;
@@ -371,6 +378,7 @@ button:active{
             <button class="tab-btn activo" onclick="mostrarTab('tab-escolar', this)">Escolar</button>
             <button class="tab-btn" onclick="mostrarTab('tab-geometria', this)">Geometría</button>
             <button class="tab-btn" onclick="mostrarTab('tab-extra', this)">Extra</button>
+            <button class="tab-btn" onclick="mostrarTab('tab-unidades', this)">FyQ</button>
             <button class="tab-btn" onclick="mostrarTab('tab-historial', this)">Historial</button>
         </div>
 
@@ -467,6 +475,27 @@ button:active{
             <div id="resultadoPit" class="resultado"></div>
         </div>
 
+        <div id="tab-unidades" class="tab-contenido">
+            <h3>Conversor FyQ</h3>
+
+            <div class="campos">
+                <select id="unidadCategoria" onchange="actualizarOpcionesUnidades()"></select>
+                <input id="unidadValor" type="number" placeholder="Valor a convertir">
+            </div>
+
+            <div class="campos">
+                <select id="unidadDesde"></select>
+                <select id="unidadHacia"></select>
+            </div>
+
+            <button class="funcion" onclick="convertirUnidadGeneral()">Convertir unidad</button>
+            <div id="resultadoUnidades" class="resultado"></div>
+
+            <div class="info-unidades">
+                Incluye unidades típicas de física y química escolar: longitud, masa, tiempo, área, volumen, temperatura, velocidad, fuerza, energía, presión y cantidad de sustancia.
+            </div>
+        </div>
+
         <div id="tab-historial" class="tab-contenido">
             <div class="historial-top">
                 <h3>Historial</h3>
@@ -483,6 +512,118 @@ const subpantalla = document.getElementById("subpantalla");
 const btnDeg = document.getElementById("btnDeg");
 const btnRad = document.getElementById("btnRad");
 const STORAGE_KEY = "calculadora_historial";
+
+const unidadesData = {
+    longitud: {
+        nombre: "Longitud",
+        unidades: {
+            mm: { nombre: "Milímetro (mm)", factor: 0.001 },
+            cm: { nombre: "Centímetro (cm)", factor: 0.01 },
+            dm: { nombre: "Decímetro (dm)", factor: 0.1 },
+            m:  { nombre: "Metro (m)", factor: 1 },
+            dam:{ nombre: "Decámetro (dam)", factor: 10 },
+            hm: { nombre: "Hectómetro (hm)", factor: 100 },
+            km: { nombre: "Kilómetro (km)", factor: 1000 }
+        }
+    },
+    masa: {
+        nombre: "Masa",
+        unidades: {
+            mg: { nombre: "Miligramo (mg)", factor: 0.001 },
+            cg: { nombre: "Centigramo (cg)", factor: 0.01 },
+            dg: { nombre: "Decigramo (dg)", factor: 0.1 },
+            g:  { nombre: "Gramo (g)", factor: 1 },
+            dag:{ nombre: "Decagramo (dag)", factor: 10 },
+            hg: { nombre: "Hectogramo (hg)", factor: 100 },
+            kg: { nombre: "Kilogramo (kg)", factor: 1000 },
+            t:  { nombre: "Tonelada (t)", factor: 1000000 }
+        }
+    },
+    tiempo: {
+        nombre: "Tiempo",
+        unidades: {
+            ms:  { nombre: "Milisegundo (ms)", factor: 0.001 },
+            s:   { nombre: "Segundo (s)", factor: 1 },
+            min: { nombre: "Minuto (min)", factor: 60 },
+            h:   { nombre: "Hora (h)", factor: 3600 },
+            d:   { nombre: "Día (d)", factor: 86400 }
+        }
+    },
+    area: {
+        nombre: "Área",
+        unidades: {
+            mm2: { nombre: "Milímetro cuadrado (mm²)", factor: 0.000001 },
+            cm2: { nombre: "Centímetro cuadrado (cm²)", factor: 0.0001 },
+            dm2: { nombre: "Decímetro cuadrado (dm²)", factor: 0.01 },
+            m2:  { nombre: "Metro cuadrado (m²)", factor: 1 },
+            ha:  { nombre: "Hectárea (ha)", factor: 10000 },
+            km2: { nombre: "Kilómetro cuadrado (km²)", factor: 1000000 }
+        }
+    },
+    volumen: {
+        nombre: "Volumen",
+        unidades: {
+            mm3: { nombre: "Milímetro cúbico (mm³)", factor: 0.000001 },
+            cm3: { nombre: "Centímetro cúbico (cm³)", factor: 0.001 },
+            mL:  { nombre: "Mililitro (mL)", factor: 0.001 },
+            cL:  { nombre: "Centilitro (cL)", factor: 0.01 },
+            dL:  { nombre: "Decilitro (dL)", factor: 0.1 },
+            L:   { nombre: "Litro (L)", factor: 1 },
+            m3:  { nombre: "Metro cúbico (m³)", factor: 1000 }
+        }
+    },
+    temperatura: {
+        nombre: "Temperatura",
+        unidades: {
+            C: { nombre: "Celsius (°C)" },
+            F: { nombre: "Fahrenheit (°F)" },
+            K: { nombre: "Kelvin (K)" }
+        }
+    },
+    velocidad: {
+        nombre: "Velocidad",
+        unidades: {
+            ms:  { nombre: "Metro por segundo (m/s)", factor: 1 },
+            kmh: { nombre: "Kilómetro por hora (km/h)", factor: 0.2777777778 },
+            cms: { nombre: "Centímetro por segundo (cm/s)", factor: 0.01 }
+        }
+    },
+    fuerza: {
+        nombre: "Fuerza",
+        unidades: {
+            N:   { nombre: "Newton (N)", factor: 1 },
+            kN:  { nombre: "Kilonewton (kN)", factor: 1000 },
+            dyn: { nombre: "Dina (dyn)", factor: 0.00001 }
+        }
+    },
+    energia: {
+        nombre: "Energía",
+        unidades: {
+            J:    { nombre: "Joule (J)", factor: 1 },
+            kJ:   { nombre: "Kilojoule (kJ)", factor: 1000 },
+            cal:  { nombre: "Caloría (cal)", factor: 4.184 },
+            kcal: { nombre: "Kilocaloría (kcal)", factor: 4184 }
+        }
+    },
+    presion: {
+        nombre: "Presión",
+        unidades: {
+            Pa:   { nombre: "Pascal (Pa)", factor: 1 },
+            hPa:  { nombre: "Hectopascal (hPa)", factor: 100 },
+            kPa:  { nombre: "Kilopascal (kPa)", factor: 1000 },
+            bar:  { nombre: "Bar", factor: 100000 },
+            atm:  { nombre: "Atmósfera (atm)", factor: 101325 },
+            mmHg: { nombre: "mmHg", factor: 133.322368 }
+        }
+    },
+    cantidad: {
+        nombre: "Cantidad de sustancia",
+        unidades: {
+            mmol: { nombre: "Milimol (mmol)", factor: 0.001 },
+            mol:  { nombre: "Mol (mol)", factor: 1 }
+        }
+    }
+};
 
 let modoAngulo = "DEG";
 
@@ -855,6 +996,70 @@ function pitagoras(){
     salida.textContent = "Hipotenusa = " + hipotenusa;
 }
 
+function cargarCategoriasUnidades(){
+    const select = document.getElementById("unidadCategoria");
+    select.innerHTML = Object.entries(unidadesData).map(([clave, data]) => {
+        return `<option value="${clave}">${data.nombre}</option>`;
+    }).join("");
+}
+
+function actualizarOpcionesUnidades(){
+    const categoria = document.getElementById("unidadCategoria").value;
+    const desde = document.getElementById("unidadDesde");
+    const hacia = document.getElementById("unidadHacia");
+
+    const unidades = unidadesData[categoria].unidades;
+
+    const opciones = Object.entries(unidades).map(([clave, data]) => {
+        return `<option value="${clave}">${data.nombre}</option>`;
+    }).join("");
+
+    desde.innerHTML = opciones;
+    hacia.innerHTML = opciones;
+
+    const claves = Object.keys(unidades);
+    if(claves.length > 1){
+        hacia.value = claves[1];
+    }
+}
+
+function convertirTemperatura(valor, desde, hacia){
+    let celsius;
+
+    if(desde === "C") celsius = valor;
+    else if(desde === "F") celsius = (valor - 32) * 5/9;
+    else if(desde === "K") celsius = valor - 273.15;
+
+    if(hacia === "C") return celsius;
+    if(hacia === "F") return (celsius * 9/5) + 32;
+    if(hacia === "K") return celsius + 273.15;
+}
+
+function convertirUnidadGeneral(){
+    const categoria = document.getElementById("unidadCategoria").value;
+    const valor = parseFloat(document.getElementById("unidadValor").value);
+    const desde = document.getElementById("unidadDesde").value;
+    const hacia = document.getElementById("unidadHacia").value;
+    const salida = document.getElementById("resultadoUnidades");
+
+    if(isNaN(valor)){
+        salida.textContent = "Ingresá un valor válido.";
+        return;
+    }
+
+    let resultado;
+
+    if(categoria === "temperatura"){
+        resultado = convertirTemperatura(valor, desde, hacia);
+    }else{
+        const factorDesde = unidadesData[categoria].unidades[desde].factor;
+        const factorHacia = unidadesData[categoria].unidades[hacia].factor;
+        resultado = (valor * factorDesde) / factorHacia;
+    }
+
+    salida.textContent = `${valor} ${desde} = ${resultado} ${hacia}`;
+}
+
 document.addEventListener("keydown", function(e){
     const tecla = e.key;
 
@@ -886,6 +1091,8 @@ document.addEventListener("keydown", function(e){
 });
 
 renderizarHistorial();
+cargarCategoriasUnidades();
+actualizarOpcionesUnidades();
 </script>
 
 </body>
